@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <getopt.h>
+#include <glib.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
