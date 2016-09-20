@@ -7,9 +7,10 @@ LDFLAGS += $(shell pkg-config --libs $(PACKAGES))
 
 CPPFLAGS += -D_DEFAULT_SOURCE
 
-CFLAGS  += -Wall -Wextra -pedantic -Wstrict-overflow -Wno-missing-field-initalizers
-CFLAGS  += -std=c11 -O2 -fno-strict-aliasing
+CFLAGS  += -Wall -Wextra -pedantic -Wstrict-overflow -Wno-missing-field-initializers
+CFLAGS  += -std=c11 -O0 -fno-strict-aliasing
 CFLAGS  += -march=native
+CFLAGS  += -ggdb3
 
 
 thinkbacklight: thinkbacklight.c format

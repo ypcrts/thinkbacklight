@@ -1,7 +1,8 @@
 #include "thinkbacklight.h"
 
-/* thinkbacklight.c */
+/* ./thinkbacklight.c */
 void print_help(void);
+uint_fast8_t set_backlight(const uint_fast16_t val);
 void print_current_backlight(void);
 void print_max_backlight(void);
 uint_fast16_t get_max_backlight(void);
@@ -9,54 +10,94 @@ uint_fast16_t get_current_backlight(void);
 uint_fast16_t get_backlight_value(const char *filepath);
 
 static int fade_flag = 0;
-static struct option long_options[] = {{
-                                           "check-current",
-                                       },
-                                       {
-                                           "check-max",
-                                       },
-                                       {
-                                           "set",
-                                       },
-                                       {
-                                           "up",
-                                       },
-                                       {
-                                           "down",
-                                       },
-                                       {
-                                           "fade",
-                                       }};
+/* static struct option long_options[] = {{ */
+/* "check-current", */
+/* }, */
+/* { */
+/* "check-max", */
+/* }, */
+/* { */
+/* "set", */
+/* }, */
+/* { */
+/* "up", */
+/* }, */
+/* { */
+/* "down", */
+/* }, */
+/* { */
+/* "fade", */
+/* }}; */
 
 int main(int argc, char **argv, char **envp) {
-  int c, option_index;
+  /* int c, option_index; */
 
-  if (argc == 0) {
-    print_help();
-    exit(0);
-  }
-  while (c == getopt_long(argc, argv, "-cxsud", long_options, &option_index)) {
-    if (c == -1) break;
-    switch (c) {
-      case 0:
-        /* set a flag */
-        break;
-      case 'c':
-        break;
-      case 'x':
-        break;
-      case 's':
-        break;
-      case 'u':
-        break;
-      case 'd':
-        break;
-        return 0;
-    }
-  }
+
+  /*
+   * if (argc == 0) {
+   *   print_help();
+   *   exit(0);
+   * }
+   */
+
+  /*
+   * while (c == getopt_long(argc, argv, "-cxsud", long_options, &option_index))
+   * {
+   *   if (c == -1) break;
+   *   switch (c) {
+   *     case 0:
+   *       [> set a flag <]
+   *       break;
+   *     case 'c':
+   *       break;
+   *     case 'x':
+   *       break;
+   *     case 's':
+   *       break;
+   *     case 'u':
+   *       break;
+   *     case 'd':
+   *       break;
+   *       return 0;
+   *   }
+   * }
+   */
 }
 
 void print_help(void) {}
+
+uint_fast8_t set_backlight_to_percentage() {
+  set_backlight(get_max_backlight());
+}
+
+uint_fast8_t set_backlight_to_max() {
+  set_backlight(get_max_backlight());
+}
+
+uint_fast8_t set_backlight(const uint_fast16_t val) {
+  FILE *f;
+  char s[MAX_STR];
+  int ret;
+
+  snprintf(s, MAX_STR, "%ld", val);
+
+  f = fopen(BACKLIGHT_FILE, "w");
+  if (f == NULL) {
+    perror(BACKLIGHT_FILE);
+    exit(1);
+  }
+
+  ret = fputs(s, f);
+  if (!(ret > 0)) {
+    perror(BACKLIGHT_FILE);
+    exit(1);
+  }
+
+  ret = fclose(f);
+  if (ret != 0) perror(NULL);
+
+  return 0;
+}
 
 void print_current_backlight(void) { printf("%ld\n", get_current_backlight()); }
 
