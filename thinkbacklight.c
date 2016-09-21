@@ -1,11 +1,14 @@
 #include "thinkbacklight.h"
 
-
-/* ./thinkbacklight.c */
+/* thinkbacklight.c */
 int main(int argc, char **argv, char **envp);
 void print_help(void);
+void set_backlight_step_up(void);
+void set_backlight_step_down(void);
+uint_fast16_t find_step_size(void);
 uint_fast16_t find_percentage_of_max(const uint_fast16_t p);
-uint_fast8_t set_backlight(const uint_fast8_t p);
+void set_backlight(const uint_fast8_t p);
+void set_backlight_raw(const uint_fast16_t p);
 void print_current_backlight(void);
 void print_max_backlight(void);
 uint_fast16_t get_max_backlight(void);
@@ -24,7 +27,7 @@ static struct option long_options[] = {{"check-current", no_argument, 0, 'c'},
 int main(int argc, char **argv, char **envp) {
   int c, option_index;
 
-  if (argc == 0) {
+  if (argc <= 1) {
     print_help();
     exit(0);
   }
@@ -43,21 +46,45 @@ int main(int argc, char **argv, char **envp) {
         print_max_backlight();
         break;
       case 's':
-        if (!optarg)          errno=EINVAL, perror(0), exit(1);
+        if (!optarg) errno = EINVAL, perror(0), exit(1);
 
         set_backlight((uint_fast8_t)atoi(optarg));
         break;
       case 'u':
-        errno = ENOSYS, perror(0), exit(1);
+        set_backlight_step_up();
         break;
       case 'd':
+        set_backlight_step_down();
+        break;
+      case 'h':
+        print_help();
+        exit(0);
         break;
     }
     return 0;
   }
 }
 
-void print_help(void) {}
+void print_help(void) { errno = ENOSYS, perror(0); }
+
+void set_backlight_step_up(void) {
+  uint_fast16_t s, c;
+
+  s = find_step_size(), c = get_current_backlight();
+  set_backlight_raw(s + c);
+}
+
+void set_backlight_step_down(void) {
+  uint_fast16_t s, c;
+
+  s = find_step_size(), c = get_current_backlight();
+  set_backlight_raw(c - s);
+}
+
+uint_fast16_t find_step_size(void) {
+  uint_fast16_t s;
+  return s = get_max_backlight() / 20;
+}
 
 uint_fast16_t find_percentage_of_max(const uint_fast16_t p) {
   uint_fast16_t v, x;
@@ -66,30 +93,31 @@ uint_fast16_t find_percentage_of_max(const uint_fast16_t p) {
   return v;
 }
 
-uint_fast8_t set_backlight(const uint_fast8_t p) {
-  FILE *f;
-  char s[MAX_STR];
+void set_backlight(const uint_fast8_t p) {
   uint_fast16_t val;
-  int ret;
 
   if (p > 100 || p == 0) errno = EINVAL, perror(0), exit(1);
 
   val = find_percentage_of_max(p);
 
+  set_backlight_raw(val);
+}
+
+void set_backlight_raw(const uint_fast16_t val) {
+  FILE *f;
+  char s[MAX_STR];
+  int ret;
 
   snprintf(s, MAX_STR, "%lu", val);
 
-  f = fopen(BACKLIGHT_FILE, "w");
+  f = fopen(BACKLIGHT_FILE, "w" /* truncate me, daddy */);
   if (f == NULL) perror(BACKLIGHT_FILE), exit(1);
 
   ret = fputs(s, f);
   if (!(ret > 0)) perror(BACKLIGHT_FILE), exit(1);
 
   ret = fclose(f);
-
   if (ret != 0) perror(NULL), exit(1);
-
-  return 0;
 }
 
 void print_current_backlight(void) { printf("%ld\n", get_current_backlight()); }
