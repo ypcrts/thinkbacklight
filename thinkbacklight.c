@@ -17,8 +17,7 @@ uint_fast16_t get_backlight_value(const char *filepath);
 
 static int fade_flag = 0;
 
-static struct option long_options[] = {{"check-current", no_argument, 0, 'c'},
-                                       {"check-max", no_argument, 0, 'x'},
+static struct option long_options[] = {{"check", no_argument, 0, 'c'},
                                        {"set", required_argument, 0, 's'},
                                        {"up", optional_argument, 0, 'u'},
                                        {"down", optional_argument, 0, 'd'},
@@ -32,7 +31,7 @@ int main(int argc, char **argv, char **envp) {
     exit(0);
   }
 
-  while ((c = getopt_long(argc, argv, "-cxsud", long_options, &option_index))) {
+  while ((c = getopt_long(argc, argv, "-csud", long_options, &option_index))) {
     if (c == -1) break;
 
     switch (c) {
@@ -41,9 +40,6 @@ int main(int argc, char **argv, char **envp) {
         break;
       case 'c':
         print_current_backlight();
-        break;
-      case 'x':
-        print_max_backlight();
         break;
       case 's':
         if (!optarg) errno = EINVAL, perror(0), exit(1);
@@ -120,9 +116,12 @@ void set_backlight_raw(const uint_fast16_t val) {
   if (ret != 0) perror(NULL), exit(1);
 }
 
-void print_current_backlight(void) { printf("%ld\n", get_current_backlight()); }
+void print_current_backlight(void) {
+  float p, c, x;
+  c = get_current_backlight(), x = get_max_backlight();
+  p = c/x * 100;
+  printf("%1.0f / %1.0f → %1.1f%% \n", c, x, p ); }
 
-void print_max_backlight(void) { printf("%ld\n", get_max_backlight()); }
 
 uint_fast16_t get_max_backlight(void) {
   return get_backlight_value(BACKLIGHT_MAX_FILE);
