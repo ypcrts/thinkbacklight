@@ -1,5 +1,6 @@
 #include <assert.h>
-// #include <glib.h>
+#include <errno.h>
+#include <getopt.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,4 +26,4 @@
 #define BACKLIGHT_MAX_FILE BACKLIGHT_DIR BACKLIGHT_MAX_FILE_NAME
 #endif
 
-#define MAX_STR 128
+#define MAX_STR 16
