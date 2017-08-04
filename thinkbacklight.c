@@ -31,7 +31,7 @@ int main(int argc, char **argv, char **envp) {
     exit(0);
   }
 
-  while ((c = getopt_long(argc, argv, "-csud", long_options, &option_index))) {
+  while ((c = getopt_long(argc, argv, "-csudh", long_options, &option_index))) {
     if (c == -1) break;
 
     switch (c) {

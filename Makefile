@@ -1,6 +1,6 @@
 PREFIX := /usr/local
 
-CC:=clang
+#CC:=clang
 
 # PACKAGES := glib-2.0
 # CFLAGS  += $(shell pkg-config --cflags $(PACKAGES))
@@ -9,7 +9,7 @@ CC:=clang
 CPPFLAGS += -D_DEFAULT_SOURCE
 
 CFLAGS  += -Wall -Wextra -pedantic -Wstrict-overflow -Wno-missing-field-initializers
-CFLAGS  += -std=c11 -O0 -fno-strict-aliasing
+CFLAGS  += -std=c11 -O2 -fno-strict-aliasing
 CFLAGS  += -Wno-unused-variable -Wno-unused-parameter
 
 
