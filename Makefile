@@ -9,7 +9,7 @@ PREFIX := /usr/local
 CPPFLAGS += -D_DEFAULT_SOURCE
 
 CFLAGS  += -Wall -Wextra -pedantic -Wstrict-overflow -Wno-missing-field-initializers
-CFLAGS  += -std=c11 -O2 -fno-strict-aliasing
+CFLAGS  += -std=c11 -O3 -fno-strict-aliasing
 CFLAGS  += -Wno-unused-variable -Wno-unused-parameter
 
 

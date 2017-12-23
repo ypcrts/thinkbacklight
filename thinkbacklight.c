@@ -15,13 +15,15 @@ uint_fast16_t get_max_backlight(void);
 uint_fast16_t get_current_backlight(void);
 uint_fast16_t get_backlight_value(const char *filepath);
 
+// TODO
 static int fade_flag = 0;
 
-static struct option long_options[] = {{"check", no_argument, 0, 'c'},
-                                       {"set", required_argument, 0, 's'},
-                                       {"up", optional_argument, 0, 'u'},
-                                       {"down", optional_argument, 0, 'd'},
-                                       {"fade", no_argument, &fade_flag, 0}};
+static struct option long_options[] = {{"check", no_argument,       0,          'c'},
+                                       {"set",   required_argument, 0,          's'},
+                                       {"up",    optional_argument, 0,          'u'},
+                                       {"down",  optional_argument, 0,          'd'},
+                                       {"fade",  no_argument,       &fade_flag, 0},
+                                       {0,       0,                 0,          0}};
 
 int main(int argc, char **argv, char **envp) {
   int c, option_index;
@@ -31,7 +33,7 @@ int main(int argc, char **argv, char **envp) {
     exit(0);
   }
 
-  while ((c = getopt_long(argc, argv, "-csudh", long_options, &option_index))) {
+  while ((c = getopt_long(argc, argv, "-cs:udh", long_options, &option_index))) {
     if (c == -1) break;
 
     switch (c) {
